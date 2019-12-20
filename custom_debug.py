@@ -141,12 +141,12 @@ def main():
             else:
                 logdir = session_dir
             print(f"Log dir: {logdir}")
+            summary_writer = tf_v1.summary.FileWriterCache.get(logdir=logdir)
             with tf.Session(graph=graph) as session:
                 for step in range(NUM_STEPS):
-                    summary_writer = tf_v1.summary.FileWriterCache.get(logdir=logdir)
                     summary = session.run(summary_op)
                     summary_writer.add_summary(summary, global_step=step)
-                    summary_writer.flush()
+            summary_writer.flush()
 
 
 if __name__ == '__main__':
