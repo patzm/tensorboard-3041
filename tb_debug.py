@@ -12,7 +12,10 @@ tf_v2 = tf.compat.v2
 HP_LR = hp.HParam("learning_rate", hp.RealInterval(0.01, 0.1))
 HP_OPTIMIZER = hp.HParam("optimizer", hp.Discrete(["adam", "sgd"]))
 
-SESSIONS = ("train", "eval")
+MODES_WORKING = ("train", "eval")
+MODES_ISSUE = ("", "eval")
+# TODO(wchargin): try both things here
+MODES = MODES_ISSUE
 
 METRIC_LOSS = "loss"
 METRIC_ACC1 = "accuracy/top_1"
@@ -33,8 +36,9 @@ def main():
             hp.hparams(
                 {h: h.domain.sample_uniform(rng) for h in (HP_LR, HP_OPTIMIZER)}
             )
-        for session in SESSIONS:
-            logdir = os.path.join(session_dir, session)
+        for mode in MODES:
+            logdir = os.path.abspath(os.path.join(session_dir, mode))
+            print(f"Log dir: {logdir}")
             with tf_v2.summary.create_file_writer(logdir).as_default():
                 for step in range(NUM_STEPS):
                     tf_v2.summary.scalar(METRIC_LOSS, rng.random(), step=step)
