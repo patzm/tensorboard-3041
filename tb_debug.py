@@ -37,7 +37,10 @@ def main():
                 {h: h.domain.sample_uniform(rng) for h in (HP_LR, HP_OPTIMIZER)}
             )
         for mode in MODES:
-            logdir = os.path.abspath(os.path.join(session_dir, mode))
+            if mode:
+                logdir = os.path.join(session_dir, mode)
+            else:
+                logdir = session_dir
             print(f"Log dir: {logdir}")
             with tf_v2.summary.create_file_writer(logdir).as_default():
                 for step in range(NUM_STEPS):

@@ -136,7 +136,10 @@ def main():
         )
         hparam_writer.write()
         for mode in MODES:
-            logdir = os.path.abspath(os.path.join(session_dir, mode))
+            if mode:
+                logdir = os.path.join(session_dir, mode)
+            else:
+                logdir = session_dir
             print(f"Log dir: {logdir}")
             with tf.Session(graph=graph) as session:
                 for step in range(NUM_STEPS):
